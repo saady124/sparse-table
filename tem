@@ -1,0 +1,42 @@
+struct sparse
+{
+    vector<int>lg;
+    vector<int>sap[20];
+    void init(int n)
+    {
+         for(int i=0;i<20;i++)sap[i].resize(n+1);
+         lg.resize(n+1);
+         lg[1]=0;
+         for(int i=2;i<n;i++)lg[i]=lg[i/2]+1;
+    }
+    int mrg(int a,int b)
+    {
+     
+    }
+    void build(vector<int>a)
+    {
+       //  copy(a.begin(),a.end(),sap[0]);
+         for(int i=0;i<a.size();i++)sap[0][i]=a[i];
+         for(int i=1;i<20;i++)
+             for(int j=0;j+(1<<(i-1))<a.size();j++)
+               sap[i][j]=mrg(sap[i-1][j],sap[i-1][j+(1<<(i-1))]);
+    }
+    int query1(int l,int r)
+    {
+         int i=lg[r-l+1];
+         return mrg(sap[i][l],sap[i][r-(1<<i)+1]);
+    }
+    int querylg(int l,int r)
+    {
+        int ans=0;
+        for(int i=20;i>=0;i--)
+        {
+              if((1<<i)<=r-l+1)
+              {
+                  ans=mrg(ans,sap[i][l]);
+                  l+=1<<i;
+              }
+        }
+        return ans;
+    }
+};
